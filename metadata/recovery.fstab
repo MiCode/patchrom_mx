@@ -1,0 +1,3 @@
+/system ext4 /dev/block/mmcblk0p2
+/data ext4 /dev/block/mmcblk0p3
+/data/cache ext4 /dev/block/mmcblk0p4
