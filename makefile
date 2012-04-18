@@ -15,7 +15,7 @@ local-out-zip-file := MIUI_mx.zip
 local-modified-apps := SettingsProvider
 
 # All apks from MIUI
-local-miui-removed-apps     := SettingsProvider Phone Mms 
+local-miui-removed-apps     := SettingsProvider Phone 
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
