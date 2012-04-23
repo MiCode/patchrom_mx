@@ -10,12 +10,13 @@ local-out-zip-file := MIUI_mx.zip
 
 #
 #local-miui-modified-apps := MiuiSystemUI MiuiHome Mms Phone Settings
+local-miui-modified-apps := MiuiSystemUI
 
 # All apps from original ZIP, but has smali files chanded
 local-modified-apps := SettingsProvider
 
 # All apks from MIUI
-local-miui-removed-apps     := SettingsProvider Phone 
+local-miui-removed-apps     := SettingsProvider MediaProvider 
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
@@ -38,5 +39,4 @@ include $(PORT_BUILD)/porting.mk
 # To define any local-target
 local-zip-misc:
 	#rm -rf $(ZIP_DIR)/system/cdrom
-	#rm $(ZIP_DIR)/system/bin/su
 	cp other/build.prop $(ZIP_DIR)/system/build.prop

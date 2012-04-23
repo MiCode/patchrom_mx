@@ -7,7 +7,7 @@ adb shell mv /data/local/tmp /data/local/tmp.bak
 adb shell ln -s /data /data/local/tmp
 adb reboot
 adb wait-for-device
-adb shell rm /data/local.prop > /dev/null
+adb shell rm /data/local.prop > nul
 adb shell "echo \"ro.kernel.qemu=1\" > /data/local.prop"
 adb reboot
 adb wait-for-device
@@ -21,11 +21,10 @@ adb remount
 adb shell stop
 
 DIR_PREFIX=out/temp/system
-
-adb shell rm /system/app/* > /dev/null
-adb shell rm /system/framework/*.odex > /dev/null
-
+adb shell rm /system/app/*
+adb shell rm /system/framework/*.odex
 adb push $DIR_PREFIX/app /system/app
+
 adb push $DIR_PREFIX/framework/framework.jar /system/framework/framework.jar
 adb push $DIR_PREFIX/framework/android.policy.jar /system/framework/android.policy.jar
 adb push $DIR_PREFIX/framework/services.jar /system/framework/services.jar
@@ -35,6 +34,20 @@ adb push $DIR_PREFIX/build.prop  /system/build.prop
 
 adb push $DIR_PREFIX/framework/framework-miui-res.apk /system/framework/framework-miui-res.apk
 adb push $DIR_PREFIX/framework/framework-res.apk /system/framework/framework-res.apk
+#push xbin
+XBIN_FILE=invoke-as
+adb push $DIR_PREFIX/xbin/$XBIN_FILE /system/xbin/$XBIN_FILE
+adb shell chown 0,0 /system/xbin/$XBIN_FILE
+adb shell chmod 06755 /system/xbin/$XBIN_FILE
+XBIN_FILE=busybox
+adb push $DIR_PREFIX/xbin/$XBIN_FILE /system/xbin/$XBIN_FILE
+adb shell chown 0,0 /system/xbin/$XBIN_FILE
+adb shell chmod 06755 /system/xbin/$XBIN_FILE
+#XBIN_FILE=su
+adb push $DIR_PREFIX/xbin/$XBIN_FILE /system/xbin/$XBIN_FILE
+adb shell chown 0,0 /system/xbin/$XBIN_FILE
+adb shell chmod 06755 /system/xbin/$XBIN_FILE
+
 
 adb push $DIR_PREFIX/etc/apns-conf.xml /system/etc/apns-conf.xml
 adb push $DIR_PREFIX/etc/telocation.db /system/etc/telocation.db
