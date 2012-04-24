@@ -1,0 +1,2 @@
+<string name="flash_device" translatable="false">"/sys/class/flashled/strobe/mode"</string>
+<integer name="flash_on_value">2</integer>
