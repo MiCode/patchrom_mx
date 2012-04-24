@@ -1,0 +1,6 @@
+
+adb shell start
+adb shell rm /data/local/tmp
+adb shell rm /data/local.prop
+adb shell mv /data/local/tmp.bak /data/local/tmp
+adb reboot
