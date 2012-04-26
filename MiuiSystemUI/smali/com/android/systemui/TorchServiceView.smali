@@ -86,14 +86,14 @@
 
     iput-object v0, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
 
-    .line 168
+    .line 182
     new-instance v0, Lcom/android/systemui/TorchServiceView$1;
 
     invoke-direct {v0, p0}, Lcom/android/systemui/TorchServiceView$1;-><init>(Lcom/android/systemui/TorchServiceView;)V
 
     iput-object v0, p0, Lcom/android/systemui/TorchServiceView;->mDelayOpen:Ljava/lang/Runnable;
 
-    .line 175
+    .line 189
     new-instance v0, Lcom/android/systemui/TorchServiceView$2;
 
     invoke-direct {v0, p0}, Lcom/android/systemui/TorchServiceView$2;-><init>(Lcom/android/systemui/TorchServiceView;)V
@@ -128,6 +128,77 @@
     iget v0, p0, Lcom/android/systemui/TorchServiceView;->mFlashMode:I
 
     return v0
+.end method
+
+.method private enableMxLed()V
+    .locals 6
+
+    .prologue
+    .line 90
+    const/4 v1, 0x0
+
+    .line 92
+    .local v1, lWriter:Ljava/io/FileWriter;
+    :try_start_0
+    new-instance v2, Ljava/io/FileWriter;
+
+    const-string v3, "/sys/class/flashled/strobe/enable"
+
+    invoke-direct {v2, v3}, Ljava/io/FileWriter;-><init>(Ljava/lang/String;)V
+    :try_end_0
+    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+
+    .line 93
+    .end local v1           #lWriter:Ljava/io/FileWriter;
+    .local v2, lWriter:Ljava/io/FileWriter;
+    :try_start_1
+    const-string v3, "1"
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x1
+
+    invoke-virtual {v2, v3, v4, v5}, Ljava/io/FileWriter;->write(Ljava/lang/String;II)V
+
+    .line 94
+    invoke-virtual {v2}, Ljava/io/FileWriter;->flush()V
+
+    .line 95
+    invoke-virtual {v2}, Ljava/io/FileWriter;->close()V
+    :try_end_1
+    .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_1
+
+    move-object v1, v2
+
+    .line 100
+    .end local v2           #lWriter:Ljava/io/FileWriter;
+    .restart local v1       #lWriter:Ljava/io/FileWriter;
+    :goto_0
+    return-void
+
+    .line 96
+    :catch_0
+    move-exception v0
+
+    .line 97
+    .local v0, e:Ljava/lang/Exception;
+    :goto_1
+    invoke-virtual {v0}, Ljava/lang/Exception;->printStackTrace()V
+
+    goto :goto_0
+
+    .line 96
+    .end local v0           #e:Ljava/lang/Exception;
+    .end local v1           #lWriter:Ljava/io/FileWriter;
+    .restart local v2       #lWriter:Ljava/io/FileWriter;
+    :catch_1
+    move-exception v0
+
+    move-object v1, v2
+
+    .end local v2           #lWriter:Ljava/io/FileWriter;
+    .restart local v1       #lWriter:Ljava/io/FileWriter;
+    goto :goto_1
 .end method
 
 .method private fetchFlashDeviceConfig()V
@@ -222,7 +293,7 @@
 
     const/4 v9, 0x1
 
-    .line 89
+    .line 103
     monitor-enter p0
 
     :try_start_0
@@ -234,31 +305,28 @@
 
     if-eqz v7, :cond_8
 
-    .line 90
+    .line 104
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     if-nez v6, :cond_0
 
-    .line 91
+    .line 105
     invoke-static {}, Landroid/hardware/Camera;->open()Landroid/hardware/Camera;
 
     move-result-object v6
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
-    .line 93
+    .line 107
     :cond_0
     if-nez p1, :cond_4
 
-    .line 94
+    .line 108
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mDelayOpen:Ljava/lang/Runnable;
 
     invoke-virtual {p0, v6}, Lcom/android/systemui/TorchServiceView;->removeCallbacks(Ljava/lang/Runnable;)Z
 
-    .line 95
-    invoke-static {}, Lcom/android/systemui/Light;->close()V
-
-    .line 96
+    .line 110
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     invoke-virtual {v6}, Landroid/hardware/Camera;->getParameters()Landroid/hardware/Camera$Parameters;
@@ -267,76 +335,76 @@
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
-    .line 97
+    .line 111
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
     const-string v7, "off"
 
     invoke-virtual {v6, v7}, Landroid/hardware/Camera$Parameters;->setFlashMode(Ljava/lang/String;)V
 
-    .line 98
+    .line 112
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     iget-object v7, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
     invoke-virtual {v6, v7}, Landroid/hardware/Camera;->setParameters(Landroid/hardware/Camera$Parameters;)V
 
-    .line 99
+    .line 113
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     invoke-virtual {v6}, Landroid/hardware/Camera;->stopPreview()V
 
-    .line 100
+    .line 114
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     invoke-virtual {v6}, Landroid/hardware/Camera;->release()V
 
-    .line 101
+    .line 115
     const/4 v6, 0x0
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
-    .line 102
+    .line 116
     invoke-virtual {p0}, Lcom/android/systemui/TorchServiceView;->invalidate()V
 
-    .line 104
+    .line 118
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCameraWakeLock:Landroid/os/PowerManager$WakeLock;
 
     if-eqz v6, :cond_1
 
-    .line 105
+    .line 119
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCameraWakeLock:Landroid/os/PowerManager$WakeLock;
 
     invoke-virtual {v6}, Landroid/os/PowerManager$WakeLock;->release()V
 
-    .line 108
+    .line 122
     :cond_1
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
     if-eqz v6, :cond_2
 
-    .line 109
+    .line 123
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
     invoke-virtual {p0, v6}, Lcom/android/systemui/TorchServiceView;->removeView(Landroid/view/View;)V
 
-    .line 110
+    .line 124
     const/4 v6, 0x0
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
-    .line 112
+    .line 126
     :cond_2
     const/16 v6, 0x8
 
     invoke-virtual {p0, v6}, Lcom/android/systemui/TorchServiceView;->setVisibility(I)V
 
-    .line 158
+    .line 172
     :cond_3
     :goto_0
     iput p1, p0, Lcom/android/systemui/TorchServiceView;->mFlashMode:I
 
-    .line 159
+    .line 173
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mContext:Landroid/content/Context;
 
     invoke-virtual {v6}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
@@ -350,28 +418,25 @@
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 166
+    .line 180
     :goto_1
     monitor-exit p0
 
     return-void
 
-    .line 114
+    .line 128
     :cond_4
     :try_start_1
-    invoke-static {}, Lcom/android/systemui/Light;->open()V
-
-    .line 115
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
     if-nez v6, :cond_5
 
-    .line 116
+    .line 129
     const/4 v6, 0x0
 
     invoke-virtual {p0, v6}, Lcom/android/systemui/TorchServiceView;->setVisibility(I)V
 
-    .line 118
+    .line 131
     new-instance v6, Landroid/view/SurfaceView;
 
     iget-object v7, p0, Lcom/android/systemui/TorchServiceView;->mContext:Landroid/content/Context;
@@ -380,7 +445,7 @@
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
-    .line 119
+    .line 132
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
 
     const/4 v7, 0x1
@@ -389,7 +454,7 @@
 
     invoke-virtual {p0, v6, v7, v8}, Lcom/android/systemui/TorchServiceView;->addView(Landroid/view/View;II)V
 
-    .line 120
+    .line 133
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mDelayOpen:Ljava/lang/Runnable;
 
     invoke-virtual {p0, v6}, Lcom/android/systemui/TorchServiceView;->post(Ljava/lang/Runnable;)Z
@@ -399,11 +464,11 @@
 
     goto :goto_1
 
-    .line 163
+    .line 177
     :catch_0
     move-exception v0
 
-    .line 164
+    .line 178
     .local v0, e:Ljava/lang/Exception;
     :try_start_2
     invoke-virtual {v0}, Ljava/lang/Exception;->printStackTrace()V
@@ -412,7 +477,7 @@
 
     goto :goto_1
 
-    .line 89
+    .line 103
     .end local v0           #e:Ljava/lang/Exception;
     :catchall_0
     move-exception v6
@@ -421,7 +486,7 @@
 
     throw v6
 
-    .line 123
+    .line 137
     :cond_5
     :try_start_3
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
@@ -432,21 +497,21 @@
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
-    .line 125
+    .line 138
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
-    const-string v7, "on"
+    const-string v7, "torch"
 
     invoke-virtual {v6, v7}, Landroid/hardware/Camera$Parameters;->setFlashMode(Ljava/lang/String;)V
 
-    .line 128
+    .line 141
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
     invoke-virtual {v6}, Landroid/hardware/Camera$Parameters;->getSupportedPreviewSizes()Ljava/util/List;
 
     move-result-object v4
 
-    .line 129
+    .line 142
     .local v4, previewSizes:Ljava/util/List;,"Ljava/util/List<Landroid/hardware/Camera$Size;>;"
     const/4 v6, 0x0
 
@@ -456,7 +521,7 @@
 
     check-cast v2, Landroid/hardware/Camera$Size;
 
-    .line 130
+    .line 143
     .local v2, minSize:Landroid/hardware/Camera$Size;
     invoke-interface {v4}, Ljava/util/List;->iterator()Ljava/util/Iterator;
 
@@ -477,7 +542,7 @@
 
     check-cast v5, Landroid/hardware/Camera$Size;
 
-    .line 131
+    .line 144
     .local v5, size:Landroid/hardware/Camera$Size;
     iget v6, v5, Landroid/hardware/Camera$Size;->height:I
 
@@ -493,12 +558,12 @@
 
     if-ge v6, v7, :cond_6
 
-    .line 132
+    .line 145
     move-object v2, v5
 
     goto :goto_2
 
-    .line 135
+    .line 148
     .end local v5           #size:Landroid/hardware/Camera$Size;
     :cond_7
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
@@ -509,14 +574,14 @@
 
     invoke-virtual {v6, v7, v8}, Landroid/hardware/Camera$Parameters;->setPreviewSize(II)V
 
-    .line 137
+    .line 150
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     iget-object v7, p0, Lcom/android/systemui/TorchServiceView;->mParams:Landroid/hardware/Camera$Parameters;
 
     invoke-virtual {v6, v7}, Landroid/hardware/Camera;->setParameters(Landroid/hardware/Camera$Parameters;)V
 
-    .line 138
+    .line 151
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     iget-object v7, p0, Lcom/android/systemui/TorchServiceView;->mSurfaceView:Landroid/view/SurfaceView;
@@ -527,12 +592,12 @@
 
     invoke-virtual {v6, v7}, Landroid/hardware/Camera;->setPreviewDisplay(Landroid/view/SurfaceHolder;)V
 
-    .line 139
+    .line 152
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCamera:Landroid/hardware/Camera;
 
     invoke-virtual {v6}, Landroid/hardware/Camera;->startPreview()V
 
-    .line 141
+    .line 154
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mContext:Landroid/content/Context;
 
     const-string v7, "power"
@@ -543,7 +608,7 @@
 
     check-cast v3, Landroid/os/PowerManager;
 
-    .line 142
+    .line 155
     .local v3, pm:Landroid/os/PowerManager;
     const/4 v6, 0x1
 
@@ -555,14 +620,14 @@
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCameraWakeLock:Landroid/os/PowerManager$WakeLock;
 
-    .line 143
+    .line 156
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mCameraWakeLock:Landroid/os/PowerManager$WakeLock;
 
     invoke-virtual {v6}, Landroid/os/PowerManager$WakeLock;->acquire()V
 
     goto/16 :goto_0
 
-    .line 146
+    .line 159
     .end local v1           #i$:Ljava/util/Iterator;
     .end local v2           #minSize:Landroid/hardware/Camera$Size;
     .end local v3           #pm:Landroid/os/PowerManager;
@@ -572,7 +637,7 @@
 
     if-nez v7, :cond_9
 
-    .line 147
+    .line 160
     new-instance v7, Ljava/io/FileWriter;
 
     iget-object v8, p0, Lcom/android/systemui/TorchServiceView;->mFlashDevice:Ljava/lang/String;
@@ -581,8 +646,11 @@
 
     iput-object v7, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
 
-    .line 150
+    .line 163
     :cond_9
+    invoke-direct {p0}, Lcom/android/systemui/TorchServiceView;->enableMxLed()V
+
+    .line 164
     iget-object v7, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
 
     if-ne p1, v9, :cond_a
@@ -596,20 +664,20 @@
 
     invoke-virtual {v7, v6}, Ljava/io/FileWriter;->write(Ljava/lang/String;)V
 
-    .line 151
+    .line 165
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
 
     invoke-virtual {v6}, Ljava/io/FileWriter;->flush()V
 
-    .line 152
+    .line 166
     if-nez p1, :cond_3
 
-    .line 153
+    .line 167
     iget-object v6, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
 
     invoke-virtual {v6}, Ljava/io/FileWriter;->close()V
 
-    .line 154
+    .line 168
     const/4 v6, 0x0
 
     iput-object v6, p0, Lcom/android/systemui/TorchServiceView;->mWriter:Ljava/io/FileWriter;
