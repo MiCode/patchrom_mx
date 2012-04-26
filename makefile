@@ -40,3 +40,6 @@ include $(PORT_BUILD)/porting.mk
 local-zip-misc:
 	#rm -rf $(ZIP_DIR)/system/cdrom
 	cp other/build.prop $(ZIP_DIR)/system/build.prop
+	cp other/recovery/recovery $(ZIP_DIR)/system/bin/recovery
+	cp other/recovery/res $(ZIP_DIR)/system/media/res -rf
+	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
