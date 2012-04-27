@@ -10,7 +10,7 @@ local-out-zip-file := MIUI_mx.zip
 
 #
 #local-miui-modified-apps := MiuiSystemUI MiuiHome Mms Phone Settings
-local-miui-modified-apps := MiuiSystemUI
+local-miui-modified-apps := MiuiSystemUI Updater
 
 # All apps from original ZIP, but has smali files chanded
 local-modified-apps := SettingsProvider
@@ -21,7 +21,9 @@ local-miui-removed-apps     := SettingsProvider MediaProvider
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
 	rootexplorer GenieWidget GalleryGoogle CalendarGoogle GoogleQuickSearchBox GooglePackageVerifier GooglePackageVerifierUpdater \
-	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox
+	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox GoogleCalendarSyncAdapter GoogleContactsSyncAdapter \
+	GoogleLoginService GoogleServicesFramework GoogleTranslate Gallery2 Street NetworkLocation MusicFX PicoTts GoogleBackupTransport \
+   Maps VoiceDialer VoiceSearch GooglePartnerSetup Talk Vending	
 
 # To include the local targets before and after zip the final ZIP file, 
 # and the local-targets should:
@@ -40,6 +42,10 @@ include $(PORT_BUILD)/porting.mk
 local-zip-misc:
 	#rm -rf $(ZIP_DIR)/system/cdrom
 	cp other/build.prop $(ZIP_DIR)/system/build.prop
+	#for release version
 	cp other/recovery/recovery $(ZIP_DIR)/system/bin/recovery
+	#for dbug version
+	#cp $(ANDROID_OUT)/system/bin/recovery $(ZIP_DIR)/system/bin/recovery
 	cp other/recovery/res $(ZIP_DIR)/system/media/res -rf
+	cp other/recovery/recovery.fstab $(ZIP_DIR)/system/etc/recovery.fstab
 	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
