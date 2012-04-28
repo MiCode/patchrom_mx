@@ -15,13 +15,19 @@ adb shell id
 
 
 adb remount
-adb shell mkdir /system/media/res
-adb push other/recovery/recovery /system/bin/recovery
-adb push other/recovery/res /system/media/res
-adb push other/recovery/recovery.fstab /system/etc/recovery.fstab
 
 adb push other/installd/installd /system/bin/installd
+adb shell chown 0,0 /system/bin/installd
+adb shell chmod 0755 /system/bin/installd 
+
 adb push other/installd/liblbesec.so /system/lib/liblbesec.so
+
+adb shell mkdir /system/media/res
+adb push other/recovery/recovery /system/bin/recovery
+adb shell chown 0,0 /system/bin/recovery
+adb shell chmod 0755 /system/bin/recovery
+adb push other/recovery/res /system/media/res
+adb push other/recovery/recovery.fstab /system/etc/recovery.fstab
 
 #end root
 
