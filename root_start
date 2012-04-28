@@ -7,7 +7,7 @@ adb shell mv /data/local/tmp /data/local/tmp.bak
 adb shell ln -s /data /data/local/tmp
 adb reboot
 adb wait-for-device
-adb shell rm /data/local.prop > nul
+adb shell rm /data/local.prop > /dev/null
 adb shell "echo \"ro.kernel.qemu=1\" > /data/local.prop"
 adb reboot
 adb wait-for-device
