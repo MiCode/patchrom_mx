@@ -401,11 +401,132 @@ void link_system_fonts() {
     closedir(dir);
 }
 
+
+#define miui_printf LOGE
+#define RET_OK 0
+#define RET_FAIL -1
+#define return_val_if_fail(p, val)  \
+	if(!(p)){ \
+	miui_printf("function %s for " #p "return %d\n", __FUNCTION__, val);return val;}
+#define return_if_fail(p) \
+	if(!(p)){ \
+	miui_printf("function %s for " #p " \n", __FUNCTION__, val);return ;}
+
+#define RECOVERY_FILE "/system/bin/recovery"
+#define TEMP_RECOVERY "/recovery"
+
+
+static int file_copy(const char *file_src, const char *file_dst)
+{
+#define BUFFER_SIZE 128
+		return_val_if_fail(file_src != NULL, -1);
+		return_val_if_fail(file_dst != NULL, -1);
+		return_val_if_fail(access(file_src, F_OK) == 0, -1);
+		int from_fd = 0;
+		int to_fd = 0;
+		char buffer[BUFFER_SIZE];
+		int bytes_read = 0;
+		int bytes_write = 0;
+		char *ptr = NULL;
+		return_val_if_fail((from_fd = open(file_src, O_RDONLY)) > 0 , -1);
+		return_val_if_fail((to_fd = open(file_dst, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR)) > 0, -1);
+	    while ((bytes_read = read(from_fd, buffer, BUFFER_SIZE)))
+		{
+			if ((bytes_read == -1) && (errno != EINTR))
+				break;
+			else
+			{
+				ptr = buffer;
+				while((bytes_write = write(to_fd, ptr, bytes_read)))
+				{
+					if ((bytes_write == -1) && (errno != EINTR))
+						break;
+					else if (bytes_write == bytes_read)
+						break;
+					else if (bytes_write > 0)
+					{
+						ptr += bytes_write;
+						bytes_read -= bytes_write;
+					}					
+				}
+				if (bytes_write == -1)
+					break;
+			}
+		}	
+
+		close(from_fd);
+		close(to_fd);
+		return 0;
+}
+
+
 int main(const int argc, const char *argv[]) {
     char buf[BUFFER_MAX];
     struct sockaddr addr;
     socklen_t alen;
     int lsocket, s, count;
+	int status;
+
+	//add boot recovery 
+	//mount sd card?
+	//miui add 
+
+	//remount /
+	pid_t child;
+	child = fork();
+	if (child == 0)
+	{
+		if (system("mount -o remount,rw /") < 0)
+		{
+			miui_printf("remount root fs failed\n");
+			_exit(-1);
+		}
+		if (system("mount -o remount,rw /system") < 0)
+		{
+			miui_printf("remount system failed\n");
+			_exit(-1);
+		}
+		wait(&status);
+		_exit(0);
+	}
+	if (waitpid(child, &status, 0) != child)
+	{
+		miui_printf("wait %d error, should be back!\n", child);
+		goto installd_start;
+	}
+	//copy file
+	if (file_copy(RECOVERY_FILE, TEMP_RECOVERY) < 0)
+	{
+		miui_printf("copy %s file to %s failed\n", RECOVERY_FILE, TEMP_RECOVERY);
+		goto installd_start;
+	}
+	//stop shell
+	if (access(TEMP_RECOVERY, F_OK) < 0)
+	{
+		miui_printf("%s is not exist\n", TEMP_RECOVERY);
+		goto installd_start;
+	}
+	chmod(TEMP_RECOVERY, "0755");	
+	property_set("ctl.stop", "zygote");
+	property_set("ctl.stop", "surfaceflinger");
+
+	child = fork();
+	if (child == 0)
+	{
+		if (execvp(TEMP_RECOVERY, 0) < 0)
+		{
+			miui_printf("execute %s failed!\n", TEMP_RECOVERY);
+		}
+		_exit(0);
+	}
+	if (waitpid(child, &status, 0) != child)
+	{
+		miui_printf("wait %d error, should be back!\n", child);
+	}
+	property_set("ctl.start", "surfaceflinger");
+	property_set("ctl.start", "zygote");
+
+installd_start:
 
     startLBE();
 

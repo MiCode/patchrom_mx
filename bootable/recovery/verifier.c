@@ -39,6 +39,8 @@ int verify_file(const char* path, const RSAPublicKey *pKeys, unsigned int numKey
         LOGE("failed to open %s (%s)\n", path, strerror(errno));
         return VERIFY_FAILURE;
     }
+	LOGI("open %s success\n", path);
+
 
     // An archive with a whole-file signature will end in six bytes:
     //

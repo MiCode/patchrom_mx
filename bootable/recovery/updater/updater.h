@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "minzip/Zip.h"
 
+
 typedef struct {
     FILE* cmd_pipe;
     ZipArchive* package_zip;

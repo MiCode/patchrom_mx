@@ -189,7 +189,9 @@ int ensure_path_mounted(const char* path) {
         }
 
         LOGE("failed to mount %s (%s)\n", v->mount_point, strerror(errno));
-        return -1;
+		return 0;
+		//modify by yanhao 
+        //return -1;
     }
 
     LOGE("unknown fs_type \"%s\" for %s\n", v->fs_type, v->mount_point);

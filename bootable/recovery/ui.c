@@ -83,8 +83,8 @@ static int gPagesIdentical = 0;
 static char text[MAX_ROWS][MAX_COLS];
 static int text_cols = 0, text_rows = 0;
 static int text_col = 0, text_row = 0, text_top = 0;
-static int show_text = 0;
-static int show_text_ever = 0;   // has show_text ever been 1?
+static int show_text = 1;
+static int show_text_ever = 1;   // has show_text ever been 1?
 
 static char menu[MAX_ROWS][MAX_COLS];
 static int show_menu = 0;
@@ -307,6 +307,7 @@ static int input_callback(int fd, short revents, void *data)
     if (ret)
         return -1;
 
+	
     if (ev.type == EV_SYN) {
         return 0;
     } else if (ev.type == EV_REL) {
@@ -619,6 +620,46 @@ static int usb_connected() {
                strerror(errno));
     }
     return connected;
+}
+
+int recovery_wait_key()
+{
+    pthread_mutex_lock(&key_queue_mutex);
+
+    // Time out after UI_WAIT_KEY_TIMEOUT_SEC, unless a USB cable is
+    // plugged in.
+#if 0
+		int flag = 0;
+        while (key_queue_len == 0 && flag > 100) {
+			if (key_queue_len >0)
+				break;	
+			sleep(1);
+			flag++;
+        }
+#endif
+
+        struct timeval now;
+        struct timespec timeout;
+        gettimeofday(&now, NULL);
+        timeout.tv_sec = now.tv_sec;
+        timeout.tv_nsec = now.tv_usec * 1000;
+        timeout.tv_sec += 3;
+
+        int rc = 0;
+        while (key_queue_len == 0 && rc != ETIMEDOUT) {
+            rc = pthread_cond_timedwait(&key_queue_cond, &key_queue_mutex,
+                                        &timeout);
+			ui_print(".");
+        }
+		if (rc == ETIMEDOUT)
+			ui_print("\nkey timeout in %s\n", __FUNCTION__);
+    int key = -1;
+    if (key_queue_len > 0) {
+        key = key_queue[0];
+        memcpy(&key_queue[0], &key_queue[1], sizeof(int) * --key_queue_len);
+    }
+    pthread_mutex_unlock(&key_queue_mutex);
+    return key;
 }
 
 int ui_wait_key()

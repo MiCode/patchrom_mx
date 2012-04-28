@@ -20,10 +20,15 @@
 #include <stdio.h>
 
 // Initialize the graphics system.
+
+
+#define RECOVERY_RES "/system/media/res"
+#define TEMP_RES "/res"
 void ui_init();
 
 // Use KEY_* codes from <linux/input.h> or KEY_DREAM_* from "minui/minui.h".
 int ui_wait_key();            // waits for a key/button press, returns the code
+int recovery_wait_key();
 int ui_key_pressed(int key);  // returns >0 if the code is currently pressed
 int ui_text_visible();        // returns >0 if text log is currently visible
 int ui_text_ever_visible();   // returns >0 if text log was ever visible

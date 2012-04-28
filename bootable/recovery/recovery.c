@@ -7,13 +7,11 @@
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * Unless required by applicable law or agreed to in writing, software * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -48,16 +46,16 @@ static const struct option OPTIONS[] = {
   { NULL, 0, NULL, 0 },
 };
 
-static const char *COMMAND_FILE = "/cache/recovery/command";
-static const char *INTENT_FILE = "/cache/recovery/intent";
-static const char *LOG_FILE = "/cache/recovery/log";
-static const char *LAST_LOG_FILE = "/cache/recovery/last_log";
+static const char *COMMAND_FILE = "/data/cache/recovery/command";
+static const char *INTENT_FILE = "/data/recovery/intent";
+static const char *LOG_FILE = "/data/recovery/log";
+static const char *LAST_LOG_FILE = "/data/recovery/last_log";
 static const char *LAST_INSTALL_FILE = "/cache/recovery/last_install";
-static const char *CACHE_ROOT = "/cache";
+static const char *CACHE_ROOT = "/data/cache";
 static const char *SDCARD_ROOT = "/sdcard";
-static const char *TEMPORARY_LOG_FILE = "/tmp/recovery.log";
-static const char *TEMPORARY_INSTALL_FILE = "/tmp/last_install";
-static const char *SIDELOAD_TEMP_DIR = "/tmp/sideload";
+static const char *TEMPORARY_LOG_FILE = "/data/recovery.log";
+static const char *TEMPORARY_INSTALL_FILE = "/data/last_install";
+static const char *SIDELOAD_TEMP_DIR = "/data/cache/sideload";
 
 extern UIParameters ui_parameters;    // from ui.c
 
@@ -296,14 +294,15 @@ erase_volume(const char *volume) {
 
     ensure_path_unmounted(volume);
 
-    if (strcmp(volume, "/cache") == 0) {
+    if (strcmp(volume, CACHE_ROOT) == 0 ) {
         // Any part of the log we'd copied to cache is now gone.
         // Reset the pointer so we copy from the beginning of the temp
         // log.
+		ui_print(" format %s\n", CACHE_ROOT);
         tmplog_offset = 0;
     }
-
-    return format_volume(volume);
+	//sprintf(buf, "wipe data");
+	return system("wipe data");
 }
 
 static char*
@@ -398,7 +397,7 @@ copy_sideloaded_package(const char* original_path) {
 
 static char**
 prepend_title(const char** headers) {
-    char* title[] = { "Android system recovery <"
+    char* title[] = { "MIUI system recovery <"
                           EXPAND(RECOVERY_API_VERSION) "e>",
                       "",
                       NULL };
@@ -638,7 +637,7 @@ wipe_data(int confirm) {
     ui_print("\n-- Wiping data...\n");
     device_wipe_data();
     erase_volume("/data");
-    erase_volume("/cache");
+    erase_volume(CACHE_ROOT);
     ui_print("Data wipe complete.\n");
 }
 
@@ -647,7 +646,7 @@ prompt_and_wait() {
     char** headers = prepend_title((const char**)MENU_HEADERS);
 
     for (;;) {
-        finish_recovery(NULL);
+        //finish_recovery(NULL);
         ui_reset_progress();
 
         int chosen_item = get_menu_selection(headers, MENU_ITEMS, 0, 0);
@@ -670,7 +669,7 @@ prompt_and_wait() {
 
             case ITEM_WIPE_CACHE:
                 ui_print("\n-- Wiping cache...\n");
-                erase_volume("/cache");
+                erase_volume(CACHE_ROOT);
                 ui_print("Cache wipe complete.\n");
                 if (!ui_text_visible()) return;
                 break;
@@ -679,7 +678,7 @@ prompt_and_wait() {
                 status = update_directory(SDCARD_ROOT, SDCARD_ROOT, &wipe_cache);
                 if (status == INSTALL_SUCCESS && wipe_cache) {
                     ui_print("\n-- Wiping cache (at package request)...\n");
-                    if (erase_volume("/cache")) {
+                    if (erase_volume(CACHE_ROOT)) {
                         ui_print("Cache wipe failed.\n");
                     } else {
                         ui_print("Cache wipe complete.\n");
@@ -701,7 +700,7 @@ prompt_and_wait() {
                 status = update_directory(CACHE_ROOT, NULL, &wipe_cache);
                 if (status == INSTALL_SUCCESS && wipe_cache) {
                     ui_print("\n-- Wiping cache (at package request)...\n");
-                    if (erase_volume("/cache")) {
+                    if (erase_volume(CACHE_ROOT)) {
                         ui_print("Cache wipe failed.\n");
                     } else {
                         ui_print("Cache wipe complete.\n");
@@ -726,8 +725,145 @@ prompt_and_wait() {
 static void
 print_property(const char *key, const char *name, void *cookie) {
     printf("%s=%s\n", key, name);
+
 }
 
+
+
+//copy dir material
+#define CMD_BACKUP		0x00000001
+#define CMD_RECUR		0x00000002
+static void do_cp(char *source ,char *des,int flags)
+{
+	struct stat st;
+	char error[1024];
+	if(-1 == stat(source,&st))
+	{
+		sprintf(error,"file stat : %s error ",source);
+		printf("%s cause %s\n", error, strerror(errno));
+		return ;
+	}
+	if(S_ISDIR(st.st_mode))
+	{
+		if(!(flags & CMD_RECUR))
+		{
+			printf("file %s is a directory file  cause %s\n", source, strerror(errno));
+			return ;
+		}
+		
+		if(-1 == mkdir(des,S_IRWXU))
+		{
+			sprintf(error,"create dir %s error",des);
+			printf("%s cause %s\n", error, strerror(errno));
+			if (NULL == strstr(strerror(errno), "File exists"))
+				return ;
+		}
+		DIR *dir;
+		struct dirent *direntp;
+		int des_size = strlen(des);
+		int source_size = strlen(source);
+
+		if((dir = opendir(source))==NULL)
+		{
+			sprintf(error,"open dir %s error : ",source);
+			printf("%s cause %s\n", error, strerror(errno));
+			return;
+		}
+		
+		des[des_size++] = '/';
+		source[source_size++] = '/';
+
+		while((direntp = readdir(dir))!=NULL)
+		{
+			if((!strcmp( direntp->d_name,"."))||(!strcmp(direntp->d_name,"..")))
+				continue;
+			printf("file %s \n",direntp->d_name);
+			strcpy(des + des_size,direntp->d_name);
+			strcpy(source+ source_size,direntp->d_name);
+			do_cp(source,des,flags);
+		}
+		des[--des_size] = 0;
+		source[--source_size] = 0;
+	}
+	else
+	{
+		int fdsource,fddes;
+		int readbytes;
+		if((fdsource = open(source,O_RDONLY)) == -1)
+		{
+			sprintf(error,"open file : %s error ",source);
+			printf("%s cause %s\n", error, strerror(errno));
+			return;
+		}
+		if((fddes = creat(des,O_CREAT|O_WRONLY|O_TRUNC))== -1)
+		{
+			sprintf(error,"open file : %s error",des);
+			printf("%s cause %s", error, strerror(errno));
+			close(fdsource);
+			return;
+		}
+		char buf[1024];
+		int size = 1024;
+		while(((readbytes = read(fdsource,buf,size)) != -1) && readbytes)
+		{
+			if(-1 ==  write(fddes,buf,readbytes) )
+			{
+				printf("cause %s",strerror(errno));
+				break;
+			}
+		}
+		close(fdsource);
+		close(fddes);
+	}
+	chmod(des,st.st_mode);
+	if(flags & CMD_BACKUP)
+	{
+		struct utimbuf time_buf;
+		time_buf.actime = st.st_atime;
+		time_buf.modtime = st.st_mtime;
+		if(-1 == utime(des,&time_buf))
+			printf("set time error");
+	}
+}
+
+static int package_get(const char *path, char *update_package, const size_t len)
+{
+	if (path == NULL && update_package == NULL && len < 1)
+	{
+		printf("input arguments error in %s\n", __FUNCTION__);
+	}
+	int n;
+	char *pos = NULL;
+	FILE *fp = fopen_path(path, "r");
+	if (fp != NULL)
+	{
+		char buf[MAX_ARG_LENGTH];
+		for (n = 0; n < MAX_ARGS; n++)
+		{
+			if (!fgets(buf, sizeof(buf), fp)) break;
+			if ((pos = strstr(buf, "update_package")) != NULL)
+			{
+				if ((pos = strchr(pos,'=')) != NULL)
+				{
+					if (strlen(pos) < len)
+					{
+						//update_package = strdup(strtok((pos+1), "\r\n"));
+						if(strcpy(update_package, (strtok((pos+1), "\r\n"))) != NULL)
+						{
+							return 0;	
+						}
+						printf("strcpy error in %s\n", __FUNCTION__);
+					}
+					printf("string is larger than buf in %s\n", __FUNCTION__);
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+
+#define MAX_PATH_LEN 256
 int
 main(int argc, char **argv) {
     time_t start = time(NULL);
@@ -735,19 +871,64 @@ main(int argc, char **argv) {
     // If these fail, there's not really anywhere to complain...
     freopen(TEMPORARY_LOG_FILE, "a", stdout); setbuf(stdout, NULL);
     freopen(TEMPORARY_LOG_FILE, "a", stderr); setbuf(stderr, NULL);
-    printf("Starting recovery on %s", ctime(&start));
+    printf("Starting recovery on %s\n", ctime(&start));
+	char path_src[MAX_PATH_LEN];
+	char path_dst[MAX_PATH_LEN];
 
+    int previous_runs = 0;
+    const char *send_intent = NULL;
+    char package_buf[MAX_PATH_LEN];
+	char *update_package = package_buf;
+    int wipe_data = 0, wipe_cache = 0;
+
+	//copy res key etc, 
+	sprintf(path_src, "%s", RECOVERY_RES);
+	sprintf(path_dst, "%s", TEMP_RES);
+	do_cp(path_src, path_dst, CMD_RECUR);
     device_ui_init(&ui_parameters);
     ui_init();
     ui_set_background(BACKGROUND_ICON_INSTALLING);
     load_volume_table();
-    get_args(&argc, &argv);
+	//add key event for entering recovery mode
+	//clear key queue for new input
+	//if COMMAND_FILE exist , go to recovery
+	if (access(COMMAND_FILE, F_OK) == 0)
+	{
+		printf("%s file exist enter recovery directly\n", COMMAND_FILE);
+		ui_print("%s file exist enter recovery directly\n", COMMAND_FILE);
+		if (package_get(COMMAND_FILE, update_package, MAX_PATH_LEN) < 0)
+		{
+			printf("get package path failed in %s\n", COMMAND_FILE);
+			ui_print("get package path failed in %s\n", COMMAND_FILE);
+			update_package = NULL;
+		}
+		ui_print("update package path is %s\n", update_package);
+	
+//		goto recovery_lable;
+	}
+	else
+	{
+		update_package = NULL;
+		ui_print("please press volume down key to enter recovery mode\n");
+	    ui_clear_key_queue();
+		int key = recovery_wait_key();	
+		//volume down is 114
+		if (key != 114)
+		{
+			ui_print("do not enter recovery mode ,key value is %d(-1=timeout)\n", key);
+			//debug for cancel return
+			exit(0);
+			//return 0;
+	
+		}
+	}
+//recovery_lable:
 
-    int previous_runs = 0;
-    const char *send_intent = NULL;
-    const char *update_package = NULL;
-    int wipe_data = 0, wipe_cache = 0;
+	//for load volume_table
 
+//    get_args(&argc, &argv);
+
+#if 0
     int arg;
     while ((arg = getopt_long(argc, argv, "", OPTIONS, NULL)) != -1) {
         switch (arg) {
@@ -763,7 +944,9 @@ main(int argc, char **argv) {
         }
     }
 
+	//no operation 
     device_recovery_start();
+
 
     printf("Command:");
     for (arg = 0; arg < argc; arg++) {
@@ -771,6 +954,7 @@ main(int argc, char **argv) {
     }
     printf("\n");
 
+#endif
     if (update_package) {
         // For backwards compatibility on the cache partition only, if
         // we're given an old 'root' path "CACHE:foo", change it to
@@ -778,7 +962,7 @@ main(int argc, char **argv) {
         if (strncmp(update_package, "CACHE:", 6) == 0) {
             int len = strlen(update_package) + 10;
             char* modified_path = malloc(len);
-            strlcpy(modified_path, "/cache/", len);
+            strlcpy(modified_path, "/data/cache/", len);
             strlcat(modified_path, update_package+6, len);
             printf("(replacing path \"%s\" with \"%s\")\n",
                    update_package, modified_path);
@@ -787,15 +971,16 @@ main(int argc, char **argv) {
     }
     printf("\n");
 
+	//what are you doing? 
     property_list(print_property, NULL);
     printf("\n");
 
     int status = INSTALL_SUCCESS;
-
+	//id because args required
     if (update_package != NULL) {
         status = install_package(update_package, &wipe_cache, TEMPORARY_INSTALL_FILE);
         if (status == INSTALL_SUCCESS && wipe_cache) {
-            if (erase_volume("/cache")) {
+            if (erase_volume(CACHE_ROOT)) {
                 LOGE("Cache wipe (requested by package) failed.");
             }
         }
@@ -803,23 +988,30 @@ main(int argc, char **argv) {
     } else if (wipe_data) {
         if (device_wipe_data()) status = INSTALL_ERROR;
         if (erase_volume("/data")) status = INSTALL_ERROR;
-        if (wipe_cache && erase_volume("/cache")) status = INSTALL_ERROR;
+        if (wipe_cache && erase_volume(CACHE_ROOT)) status = INSTALL_ERROR;
         if (status != INSTALL_SUCCESS) ui_print("Data wipe failed.\n");
     } else if (wipe_cache) {
-        if (wipe_cache && erase_volume("/cache")) status = INSTALL_ERROR;
+        if (wipe_cache && erase_volume(CACHE_ROOT)) status = INSTALL_ERROR;
         if (status != INSTALL_SUCCESS) ui_print("Cache wipe failed.\n");
     } else {
         status = INSTALL_ERROR;  // No command specified
     }
-
+	//draw background ,better view
     if (status != INSTALL_SUCCESS) ui_set_background(BACKGROUND_ICON_ERROR);
+	//set show_text = 1, force show menu
+	ui_show_text(1);
     if (status != INSTALL_SUCCESS || ui_text_visible()) {
+		//this while recycle, very importent
         prompt_and_wait();
     }
 
     // Otherwise, get ready to boot the main system...
+	// saowei work ,how does translate saowei?^^
+	system("rm -r /res");
     finish_recovery(send_intent);
     ui_print("Rebooting...\n");
     android_reboot(ANDROID_RB_RESTART, 0, 0);
+	//delete /res
+	//delete_recursive(TEMP_RES);
     return EXIT_SUCCESS;
 }

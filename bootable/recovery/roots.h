@@ -22,6 +22,7 @@
 // Load and parse volume data from /etc/recovery.fstab.
 void load_volume_table();
 
+void mx_load_volume_table(); 
 // Return the Volume* record for this path (or NULL).
 Volume* volume_for_path(const char* path);
 

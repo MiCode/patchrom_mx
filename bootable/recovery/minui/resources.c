@@ -51,7 +51,9 @@ int res_create_surface(const char* name, gr_surface* pSurface) {
 
     *pSurface = NULL;
 
-    snprintf(resPath, sizeof(resPath)-1, "/res/images/%s.png", name);
+	//modify res path
+    snprintf(resPath, sizeof(resPath)-1, "%s/images/%s.png", TEMP_RES, name);
+	printf("resource path is %s\n", resPath);
     resPath[sizeof(resPath)-1] = '\0';
     FILE* fp = fopen(resPath, "rb");
     if (fp == NULL) {
