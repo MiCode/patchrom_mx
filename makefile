@@ -10,7 +10,8 @@ local-out-zip-file := MIUI_mx.zip
 
 #
 #local-miui-modified-apps := MiuiSystemUI MiuiHome Mms Phone Settings
-local-miui-modified-apps := MiuiSystemUI Updater
+#Updater 
+local-miui-modified-apps := MiuiSystemUI
 
 # All apps from original ZIP, but has smali files chanded
 local-modified-apps := SettingsProvider
@@ -48,4 +49,7 @@ local-zip-misc:
 	#cp $(ANDROID_OUT)/system/bin/recovery $(ZIP_DIR)/system/bin/recovery
 	cp other/recovery/res $(ZIP_DIR)/system/media/res -rf
 	cp other/recovery/recovery.fstab $(ZIP_DIR)/system/etc/recovery.fstab
+	#for release version
 	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
+	#for debug version
+	#cp $(ANDROID_OUT)/system/bin/installd $(ZIP_DIR)/system/bin/installd

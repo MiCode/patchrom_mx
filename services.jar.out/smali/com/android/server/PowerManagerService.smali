@@ -39,6 +39,8 @@
 
 .field private static final BUTTON_BRIGHT_BIT:I = 0x4
 
+.field private static COMMAND_FILE:Ljava/io/File; = null
+
 .field static final DEBUG_SCREEN_ON:Z = false
 
 .field private static final DEFAULT_SCREEN_OFF_TIMEOUT:I = 0x3a98
@@ -74,6 +76,8 @@
 .field private static final PROXIMITY_SENSOR_DELAY:I = 0x3e8
 
 .field private static final PROXIMITY_THRESHOLD:F = 5.0f
+
+.field private static RECOVERY_DIR:Ljava/io/File; = null
 
 .field private static final SCREEN_BRIGHT:I = 0x3
 
@@ -327,6 +331,33 @@
 
 
 # direct methods
+.method static constructor <clinit>()V
+    .locals 3
+
+    .prologue
+    .line 91
+    new-instance v0, Ljava/io/File;
+
+    const-string v1, "/data/cache/recovery"
+
+    invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+
+    sput-object v0, Lcom/android/server/PowerManagerService;->RECOVERY_DIR:Ljava/io/File;
+
+    .line 93
+    new-instance v0, Ljava/io/File;
+
+    sget-object v1, Lcom/android/server/PowerManagerService;->RECOVERY_DIR:Ljava/io/File;
+
+    const-string v2, "command"
+
+    invoke-direct {v0, v1, v2}, Ljava/io/File;-><init>(Ljava/io/File;Ljava/lang/String;)V
+
+    sput-object v0, Lcom/android/server/PowerManagerService;->COMMAND_FILE:Ljava/io/File;
+
+    return-void
+.end method
+
 .method constructor <init>()V
     .locals 8
 
@@ -9224,86 +9255,183 @@
 .end method
 
 .method public reboot(Ljava/lang/String;)V
-    .locals 5
+    .locals 8
     .parameter "reason"
 
     .prologue
-    .line 2584
-    iget-object v2, p0, Lcom/android/server/PowerManagerService;->mContext:Landroid/content/Context;
+    const/4 v2, 0x0
 
-    const-string v3, "android.permission.REBOOT"
+    const/4 v7, 0x0
 
-    const/4 v4, 0x0
+    iget-object v5, p0, Lcom/android/server/PowerManagerService;->mContext:Landroid/content/Context;
 
-    invoke-virtual {v2, v3, v4}, Landroid/content/Context;->enforceCallingOrSelfPermission(Ljava/lang/String;Ljava/lang/String;)V
+    const-string v6, "android.permission.REBOOT"
 
-    .line 2586
-    iget-object v2, p0, Lcom/android/server/PowerManagerService;->mHandler:Landroid/os/Handler;
+    invoke-virtual {v5, v6, v2}, Landroid/content/Context;->enforceCallingOrSelfPermission(Ljava/lang/String;Ljava/lang/String;)V
 
-    if-eqz v2, :cond_0
+    iget-object v5, p0, Lcom/android/server/PowerManagerService;->mHandler:Landroid/os/Handler;
+
+    if-eqz v5, :cond_0
 
     invoke-static {}, Landroid/app/ActivityManagerNative;->isSystemReady()Z
 
-    move-result v2
+    move-result v5
 
-    if-nez v2, :cond_1
+    if-nez v5, :cond_1
 
-    .line 2587
     :cond_0
-    new-instance v2, Ljava/lang/IllegalStateException;
+    new-instance v5, Ljava/lang/IllegalStateException;
 
-    const-string v3, "Too early to call reboot()"
+    const-string v6, "Too early to call reboot()"
 
-    invoke-direct {v2, v3}, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+    invoke-direct {v5, v6}, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
 
-    throw v2
+    throw v5
 
-    .line 2590
     :cond_1
-    move-object v0, p1
+    invoke-static {v7}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
 
-    .line 2591
-    .local v0, finalReason:Ljava/lang/String;
-    new-instance v1, Lcom/android/server/PowerManagerService$11;
+    move-result-object v3
 
-    invoke-direct {v1, p0, v0}, Lcom/android/server/PowerManagerService$11;-><init>(Lcom/android/server/PowerManagerService;Ljava/lang/String;)V
+    .local v3, recovery_flag:Ljava/lang/Boolean;
+    if-eqz p1, :cond_3
 
-    .line 2600
-    .local v1, runnable:Ljava/lang/Runnable;
-    iget-object v2, p0, Lcom/android/server/PowerManagerService;->mHandler:Landroid/os/Handler;
+    const-string v5, "recovery"
 
-    invoke-virtual {v2, v1}, Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z
+    invoke-virtual {p1, v5}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
 
-    .line 2603
-    monitor-enter v1
+    move-result v5
 
-    .line 2606
-    :goto_0
+    if-eqz v5, :cond_3
+
+    const/4 v5, 0x1
+
+    invoke-static {v5}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+
+    move-result-object v3
+
+    sget-object v5, Lcom/android/server/PowerManagerService;->COMMAND_FILE:Ljava/io/File;
+
+    invoke-virtual {v5}, Ljava/io/File;->exists()Z
+
+    move-result v5
+
+    if-nez v5, :cond_2
+
     :try_start_0
-    invoke-virtual {v1}, Ljava/lang/Object;->wait()V
+    sget-object v5, Lcom/android/server/PowerManagerService;->RECOVERY_DIR:Ljava/io/File;
+
+    invoke-virtual {v5}, Ljava/io/File;->mkdirs()Z
+
+    new-instance v0, Ljava/io/FileWriter;
+
+    sget-object v5, Lcom/android/server/PowerManagerService;->COMMAND_FILE:Ljava/io/File;
+
+    invoke-direct {v0, v5}, Ljava/io/FileWriter;-><init>(Ljava/io/File;)V
     :try_end_0
-    .catchall {:try_start_0 .. :try_end_0} :catchall_0
-    .catch Ljava/lang/InterruptedException; {:try_start_0 .. :try_end_0} :catch_0
+    .catch Ljava/io/IOException; {:try_start_0 .. :try_end_0} :catch_1
 
-    goto :goto_0
-
-    .line 2607
-    :catch_0
-    move-exception v2
-
-    goto :goto_0
-
-    .line 2610
-    :catchall_0
-    move-exception v2
-
+    .local v0, command:Ljava/io/FileWriter;
     :try_start_1
-    monitor-exit v1
+    const-string v5, "recovery\n"
+
+    invoke-virtual {v0, v5}, Ljava/io/FileWriter;->write(Ljava/lang/String;)V
     :try_end_1
     .catchall {:try_start_1 .. :try_end_1} :catchall_0
 
-    throw v2
+    :try_start_2
+    invoke-virtual {v0}, Ljava/io/FileWriter;->close()V
+    :try_end_2
+    .catch Ljava/io/IOException; {:try_start_2 .. :try_end_2} :catch_1
+
+    .end local v0           #command:Ljava/io/FileWriter;
+    :cond_2
+    :goto_0
+    invoke-virtual {v3}, Ljava/lang/Boolean;->booleanValue()Z
+
+    move-result v5
+
+    if-eqz v5, :cond_4
+
+    .local v2, finalReason:Ljava/lang/String;
+    :goto_1
+    new-instance v4, Lcom/android/server/PowerManagerService$11;
+
+    invoke-direct {v4, p0, v2}, Lcom/android/server/PowerManagerService$11;-><init>(Lcom/android/server/PowerManagerService;Ljava/lang/String;)V
+
+    .local v4, runnable:Ljava/lang/Runnable;
+    iget-object v5, p0, Lcom/android/server/PowerManagerService;->mHandler:Landroid/os/Handler;
+
+    invoke-virtual {v5, v4}, Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z
+
+    monitor-enter v4
+
+    :goto_2
+    :try_start_3
+    invoke-virtual {v4}, Ljava/lang/Object;->wait()V
+    :try_end_3
+    .catchall {:try_start_3 .. :try_end_3} :catchall_1
+    .catch Ljava/lang/InterruptedException; {:try_start_3 .. :try_end_3} :catch_0
+
+    goto :goto_2
+
+    :catch_0
+    move-exception v5
+
+    goto :goto_2
+
+    .end local v2           #finalReason:Ljava/lang/String;
+    .end local v4           #runnable:Ljava/lang/Runnable;
+    .restart local v0       #command:Ljava/io/FileWriter;
+    :catchall_0
+    move-exception v5
+
+    :try_start_4
+    invoke-virtual {v0}, Ljava/io/FileWriter;->close()V
+
+    throw v5
+    :try_end_4
+    .catch Ljava/io/IOException; {:try_start_4 .. :try_end_4} :catch_1
+
+    .end local v0           #command:Ljava/io/FileWriter;
+    :catch_1
+    move-exception v1
+
+    .local v1, ex:Ljava/io/IOException;
+    const-string v5, "PowerManagerService"
+
+    const-string v6, "file operation failed"
+
+    invoke-static {v5, v6}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+
+    goto :goto_0
+
+    .end local v1           #ex:Ljava/io/IOException;
+    :cond_3
+    invoke-static {v7}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
+
+    move-result-object v3
+
+    goto :goto_0
+
+    :cond_4
+    move-object v2, p1
+
+    goto :goto_1
+
+    .restart local v2       #finalReason:Ljava/lang/String;
+    .restart local v4       #runnable:Ljava/lang/Runnable;
+    :catchall_1
+    move-exception v5
+
+    :try_start_5
+    monitor-exit v4
+    :try_end_5
+    .catchall {:try_start_5 .. :try_end_5} :catchall_1
+
+    throw v5
 .end method
+
 
 .method public releaseWakeLock(Landroid/os/IBinder;I)V
     .locals 4
