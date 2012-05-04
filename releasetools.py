@@ -3,10 +3,9 @@ import edify_generator
 
 
 def AddAssertions(info):
+    info.script.AppendExtra('set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");');
     edify = info.script
     for i in xrange(len(edify.script)):
-        if ");" in edify.script[i] and ("ro.product.device" in edify.script[i] or "ro.build.product" in edify.script[i]):
-            edify.script[i] = edify.script[i].replace(");", ' || getprop("ro.product.device") == "u8860" || getprop("ro.build.product") == "u8860");')
         if "unmount(\"/system\")" in edify.script[i]:
             edify.script[i] = edify.script[i].replace("unmount", 'ui_print')
         elif "format" in edify.script[i] and "/dev/block/mmcblk0p2" in edify.script[i]:
