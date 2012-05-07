@@ -2,6 +2,8 @@
 #
 #pull log from /data/system/dropbox
 
+# upload for add exec permission
+
 ROOT_END=root_end
 ROOT_START=root_start
 DATA_FORMAT=dataformat.sh

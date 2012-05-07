@@ -1,6 +1,7 @@
 #! /bin/bash
 
 # check ower is root?
+# upload for add exec permission
 
 adb wait-for-device
 echo `adb shell id` | grep "uid=0(root)"
