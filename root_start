@@ -2,7 +2,6 @@
 #make clean
 
 #make fullota
-# upload for add exec permission
 
 # check ower is root?
 adb wait-for-device

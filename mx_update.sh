@@ -1,7 +1,6 @@
 #! /bin/bash
 #make clean
 
-# upload for add exec permission
 #make fullota
 
 adb shell mv /data/local/tmp /data/local/tmp.bak

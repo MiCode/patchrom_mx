@@ -1,6 +1,5 @@
 #! /bin/bash
 
-# upload for add exec permission
 #format date to YMDhms,
 #if len > 12, truncat 
 
