@@ -39,6 +39,7 @@ include $(PORT_BUILD)/porting.mk
 
 # To define any local-target
 local-zip-misc:
+	rm $(ZIP_DIR)/system/framework/twframework-res.apk
 	#rm -rf $(ZIP_DIR)/system/cdrom
 	cp other/build.prop $(ZIP_DIR)/system/build.prop
 	#for release version
