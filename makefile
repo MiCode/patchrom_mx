@@ -1,5 +1,5 @@
 #
-# Makefile for u8860
+# Makefile for mx
 #
 
 # The original zip file, MUST be specified by each product
@@ -17,14 +17,12 @@ local-miui-modified-apps := MiuiSystemUI
 local-modified-apps := SettingsProvider
 
 # All apks from MIUI
-local-miui-removed-apps     := SettingsProvider MediaProvider Stk Bluetooth
+local-miui-removed-apps     := SettingsProvider MediaProvider Phone Stk Bluetooth
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
 	rootexplorer GenieWidget GalleryGoogle CalendarGoogle GoogleQuickSearchBox GooglePackageVerifier GooglePackageVerifierUpdater \
-	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox GoogleCalendarSyncAdapter GoogleContactsSyncAdapter \
-	GoogleLoginService GoogleServicesFramework GoogleTranslate Gallery2 Street NetworkLocation MusicFX PicoTts GoogleBackupTransport \
-   Maps VoiceDialer VoiceSearch GooglePartnerSetup Talk Vending	
+	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox Maps VoiceSearch Talk Vending
 
 # To include the local targets before and after zip the final ZIP file, 
 # and the local-targets should:
