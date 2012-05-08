@@ -3,7 +3,7 @@ import edify_generator
 
 
 def AddAssertions(info):
-    info.script.AppendExtra('set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");');
+    info.script.AppendExtra('set_perm_recursive(0, 2000, 06755, 06755, "/system/xbin");');
     edify = info.script
     for i in xrange(len(edify.script)):
         if "unmount(\"/system\")" in edify.script[i]:
