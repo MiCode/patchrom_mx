@@ -17,12 +17,13 @@ local-miui-modified-apps := MiuiSystemUI
 local-modified-apps := SettingsProvider
 
 # All apks from MIUI
-local-miui-removed-apps     := SettingsProvider MediaProvider Phone Stk Bluetooth
+local-miui-removed-apps     := SettingsProvider MediaProvider Stk Bluetooth
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
 	rootexplorer GenieWidget GalleryGoogle CalendarGoogle GoogleQuickSearchBox GooglePackageVerifier GooglePackageVerifierUpdater \
-	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox Maps VoiceSearch Talk Vending
+	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox Maps VoiceSearch Talk Vending Gallery2 GoogleTranslate \
+	PinyinIME Street PhaseBeam
 
 # To include the local targets before and after zip the final ZIP file, 
 # and the local-targets should:
@@ -52,3 +53,4 @@ local-zip-misc:
 	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
 	#for debug version
 	#cp $(ANDROID_OUT)/system/bin/installd $(ZIP_DIR)/system/bin/installd
+	cp LiveWallpapers.apk $(ZIP_DIR)/system/app/LiveWallpapers.apk

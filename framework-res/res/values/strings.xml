@@ -27,7 +27,7 @@
     <string name="config_ethernet_iface_regex">eth\\d</string>
     <string name="config_tether_apndata" />
     <string name="config_wifi_p2p_device_type">10-0050F204-5</string>
-    <string name="default_wallpaper_component">com.android.phasebeam/.PhaseBeamWallpaper</string>
+    <string name="default_wallpaper_component">@null</string>
     <string name="config_networkLocationProvider">com.google.android.location.NetworkLocationProvider</string>
     <string name="config_geocodeProvider">com.google.android.location.GeocodeProvider</string>
     <string name="config_datause_iface">rmnet0</string>
