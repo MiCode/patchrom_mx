@@ -44,9 +44,13 @@ rild.libargs=-d /dev/ttyACM0
 keyguard.no_require_sim=true
 ro.com.android.dataroaming=false
 ro.com.android.dateformat=MM-dd-yyyy
-ro.config.ringtone=Ring_Synth_04.ogg
-ro.config.notification_sound=pixiedust.ogg
-ro.config.alarm_alert=Alarm_Classic.ogg
+ro.config.notification_sound=FadeIn.ogg
+ro.config.alarm_alert=GoodMorning.ogg
+ro.config.ringtone=MI.ogg
+#sms sound
+ro.config.sms_received_sound=FadeIn.ogg
+ro.config.sms_delivered_sound=MessageComplete.ogg
+
 ro.opengles.version=131072
 hwui.render_dirty_regions=false
 persist.sys.timezone=Asia/Shanghai
