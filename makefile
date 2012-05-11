@@ -53,4 +53,3 @@ local-zip-misc:
 	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
 	#for debug version
 	#cp $(ANDROID_OUT)/system/bin/installd $(ZIP_DIR)/system/bin/installd
-	cp LiveWallpapers.apk $(ZIP_DIR)/system/app/LiveWallpapers.apk
