@@ -11,7 +11,7 @@ local-out-zip-file := MIUI_mx.zip
 #
 #local-miui-modified-apps := MiuiSystemUI MiuiHome Mms Phone Settings
 #Updater 
-local-miui-modified-apps := MiuiSystemUI
+local-miui-modified-apps := MiuiSystemUI ThemeManager
 
 # All apps from original ZIP, but has smali files chanded
 local-modified-apps := SettingsProvider

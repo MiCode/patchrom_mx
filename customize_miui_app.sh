@@ -11,3 +11,8 @@ if [ $1 = "MiuiSystemUI" ];then
 	$XMLMERGYTOOL $1/res/values $2/res/values
 fi
 
+if [ $1 = "ThemeManager" ];then
+echo "Merger ThemeManager xml"
+	$XMLMERGYTOOL $1/res/values $2/res/values
+fi
+

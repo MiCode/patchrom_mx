@@ -650,7 +650,7 @@
 .end method
 
 .method public reboot(Ljava/lang/String;)V
-    .locals 5
+    .locals 6
     .parameter "reason"
     .annotation system Ldalvik/annotation/Throws;
         value = {
@@ -678,7 +678,9 @@
     invoke-virtual {v0, v2}, Landroid/os/Parcel;->writeInterfaceToken(Ljava/lang/String;)V
 
     .line 508
-    invoke-virtual {v0, p1}, Landroid/os/Parcel;->writeString(Ljava/lang/String;)V
+    const-string/jumbo v5, "NULL"
+
+    invoke-virtual {v0, v5}, Landroid/os/Parcel;->writeString(Ljava/lang/String;)V
 
     .line 509
     iget-object v2, p0, Landroid/os/IPowerManager$Stub$Proxy;->mRemote:Landroid/os/IBinder;

@@ -1,0 +1,5 @@
+<resources>
+
+<bool name="support_font_replacement">false</bool>
+
+</resources>
