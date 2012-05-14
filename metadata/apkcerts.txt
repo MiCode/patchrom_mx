@@ -59,4 +59,3 @@ name="VoiceDialer.apk" certificate="PRESIGNED" private_key=""
 name="VoiceSearch.apk" certificate="PRESIGNED" private_key=""
 name="VpnDialogs.apk" certificate="build/target/product/security/platform.x509.pem" private_key="build/target/product/security/platform.pk8"
 name="WAPPushManager.apk" certificate="PRESIGNED" private_key=""
-
