@@ -17,7 +17,7 @@ local-miui-modified-apps := MiuiSystemUI ThemeManager MiuiHome
 local-modified-apps := SettingsProvider
 
 # All apks from MIUI
-local-miui-removed-apps     := SettingsProvider MediaProvider Stk Bluetooth
+local-miui-removed-apps     := MediaProvider Stk Bluetooth
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
