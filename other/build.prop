@@ -57,7 +57,8 @@ persist.sys.timezone=Asia/Shanghai
 dalvik.vm.heapstartsize=5m
 dalvik.vm.heapgrowthlimit=48m
 dalvik.vm.heapsize=128m
-ro.sf.lcd_density=320
+#ro.sf.lcd_density=320 orgin
+ro.sf.lcd_density=280
 wifi.interface=eth0
 wifi.supplicant_scan_interval=15
 dalvik.vm.dexopt-flags=m=y
