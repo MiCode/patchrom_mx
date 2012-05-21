@@ -21,9 +21,9 @@ local-miui-removed-apps     := MediaProvider Stk Bluetooth
 
 # All apps need to be removed from original ZIP file
 local-remove-apps := AllBackup SystemUI SetupWizard Cloud NotePad HwIME Superuser MusicFx Launcher2 FileManager HwOUC \
-	rootexplorer GenieWidget GalleryGoogle CalendarGoogle GoogleQuickSearchBox GooglePackageVerifier GooglePackageVerifierUpdater \
-	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox Maps VoiceSearch Talk Vending Gallery2 GoogleTranslate \
-	PinyinIME Street PhaseBeam
+	rootexplorer GenieWidget GalleryGoogle CalendarGoogle GooglePackageVerifier GooglePackageVerifierUpdater \
+	GoogleTTS GooglePlayMusic TotemWeather Trebuchet ToolBox Maps Talk Vending Gallery2 GoogleTranslate \
+	PinyinIME Street PhaseBeam VoiceSearch
 
 # To include the local targets before and after zip the final ZIP file, 
 # and the local-targets should:
