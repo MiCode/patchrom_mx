@@ -51,5 +51,8 @@ local-zip-misc:
 	cp other/recovery/recovery.fstab $(ZIP_DIR)/system/etc/recovery.fstab
 	#for release version
 	cp other/installd/installd $(ZIP_DIR)/system/bin/installd
+	@echo update bootanimation
+	rm $(ZIP_DIR)/system/bin/bootanimation
+	cp other/bootanimation $(ZIP_DIR)/system/bin/bootanimation
 	#for debug version
 	#cp $(ANDROID_OUT)/system/bin/installd $(ZIP_DIR)/system/bin/installd
