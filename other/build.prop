@@ -61,7 +61,7 @@ dalvik.vm.heapstartsize=8m
 dalvik.vm.heapgrowthlimit=64m
 dalvik.vm.heapsize=256m
 #ro.sf.lcd_density=320 orgin
-ro.sf.lcd_density=280
+ro.sf.lcd_density=320
 wifi.interface=eth0
 wifi.supplicant_scan_interval=15
 dalvik.vm.dexopt-flags=m=y
