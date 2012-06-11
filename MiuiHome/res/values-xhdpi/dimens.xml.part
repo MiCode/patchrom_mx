@@ -8,7 +8,7 @@
     <dimen name="user_folder_cell_width">90dip</dimen>
     <dimen name="user_folder_cell_height">90dip</dimen>
 
-    <dimen name="icon_title_padding_bottom">10dip</dimen>
+    <dimen name="icon_title_padding_bottom">13dip</dimen>
 
-    <dimen name="workspace_icon_text_size">13sp</dimen>
+    <dimen name="workspace_icon_text_size">11sp</dimen>
 </resources>
