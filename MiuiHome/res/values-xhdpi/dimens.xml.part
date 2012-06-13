@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="config_icon_width">55dip</dimen>
-	<dimen name="config_icon_height">55dip</dimen>
+    <dimen name="config_icon_width">58dip</dimen>
+	<dimen name="config_icon_height">58dip</dimen>
     <dimen name="workspace_padding_side">12dip</dimen>
     <dimen name="workspace_margin_bottom">70dip</dimen>
     <dimen name="hotseats_padding_side">10dip</dimen>
     <dimen name="user_folder_cell_width">90dip</dimen>
     <dimen name="user_folder_cell_height">90dip</dimen>
 
-    <dimen name="icon_title_padding_bottom">13dip</dimen>
+    <dimen name="icon_title_padding_bottom">14dip</dimen>
 
     <dimen name="workspace_icon_text_size">11sp</dimen>
 </resources>
