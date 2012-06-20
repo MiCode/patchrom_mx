@@ -56,11 +56,11 @@
     <dimen name="action_bar_subtitle_text_size">14.0dip</dimen>
     <dimen name="action_bar_subtitle_top_margin">-3.0dip</dimen>
     <dimen name="action_bar_subtitle_bottom_margin">5.0dip</dimen>
-    <dimen name="keyguard_lockscreen_clock_font_size">80.0dip</dimen>
+    <dimen name="keyguard_lockscreen_clock_font_size">70.0dip</dimen>
     <dimen name="keyguard_lockscreen_status_line_font_size">14.0dip</dimen>
     <dimen name="keyguard_lockscreen_status_line_font_right_margin">42.0dip</dimen>
-    <dimen name="keyguard_lockscreen_status_line_clockfont_top_margin">22.0dip</dimen>
-    <dimen name="keyguard_lockscreen_status_line_clockfont_bottom_margin">12.0dip</dimen>
+    <dimen name="keyguard_lockscreen_status_line_clockfont_top_margin">2.0dip</dimen>
+    <dimen name="keyguard_lockscreen_status_line_clockfont_bottom_margin">8.0dip</dimen>
     <dimen name="keyguard_lockscreen_pin_margin_left">40.0dip</dimen>
     <dimen name="activity_chooser_popup_min_width">200.0dip</dimen>
     <dimen name="default_gap">16.0dip</dimen>
